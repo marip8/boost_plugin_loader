@@ -281,6 +281,26 @@ TEST(BoostPluginLoaderUnit, LoadTestPlugin)  // NOLINT
   }
 }
 
+TEST(BoostPluginLoaderUnit, LoadMultipleTestPlugins)  // NOLINT
+{
+  using boost_plugin_loader::PluginLoader;
+  using boost_plugin_loader::TestPluginBase;
+
+  {
+    PluginLoader plugin_loader;
+    plugin_loader.search_paths.insert(std::string(PLUGIN_DIR));
+    plugin_loader.search_libraries.insert(std::string(PLUGINS));
+
+    EXPECT_TRUE(plugin_loader.isPluginAvailable("plugin"));
+    auto plugin_1 = plugin_loader.createInstance<TestPluginBase>("plugin");
+    EXPECT_TRUE(plugin_1 != nullptr);
+
+    auto plugin_2 = plugin_loader.createInstance<TestPluginBase>("plugin");
+    EXPECT_TRUE(plugin_2 != nullptr);
+    EXPECT_TRUE(plugin_2 != plugin_1);
+  }
+}
+
 int main(int argc, char** argv)
 {
   testing::InitGoogleTest(&argc, argv);
